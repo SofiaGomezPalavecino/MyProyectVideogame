@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Unity.Android.Gradle.Manifest;
 using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -7,22 +6,23 @@ using UnityEngine.SceneManagement;
 public class ObserverSelection : MonoBehaviour
 {
     public Mecanics mecanics;
-    public Shopping shoppingReceiver;
-    public UIScript uiScriptResiver;
+    public InteractiveP interactive;
 
     void Start()
     {
         if (mecanics != null)
         {
-            //mecanics.OnScoreChanged += HandleScoreChanged;
+            // Suscribirse al evento
+            mecanics.SelectionChanged += HandleScoreChanged;
+
+            HandleScoreChanged(mecanics.optionValue);
         }
     }
-
     void HandleScoreChanged(int newValue)
     {
-        if (shoppingReceiver != null)
+        if (interactive != null)
         {
-            shoppingReceiver.NotifyValueChanged(newValue);
+            interactive.NotifyValueChanged(newValue);
         }
     }
 

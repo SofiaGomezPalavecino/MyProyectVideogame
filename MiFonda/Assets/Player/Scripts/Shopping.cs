@@ -16,12 +16,4 @@ public class Shopping : MonoBehaviour
     {
         
     }
-    public void NotifyValueChanged(int newValue)
-    {
-        // Manejar la notificación del cambio de valor
-        //Debug.Log("El valor ha cambiado a: " + newValue);
-
-        //// Realizar acciones basadas en el estado del objeto
-        
-    }
 }

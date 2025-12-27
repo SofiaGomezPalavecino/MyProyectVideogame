@@ -33,7 +33,7 @@ public class Mecanics : MonoBehaviour
         }
         else
         {
-            option = 0;
+            optionValue = 0;
         }
     }
     private void IsGrounded()
@@ -52,7 +52,7 @@ public class Mecanics : MonoBehaviour
         }
         else
         {
-            option = 0;
+            optionValue = 0;
         }
     }
     private void isAnObject(string tag)
@@ -60,13 +60,13 @@ public class Mecanics : MonoBehaviour
         switch (tag)
         {
             case "Untagged":
-                option = 0;
+                optionValue = 0;
                 break;
             case "Collectable":
-                option = 1;
+                optionValue = 1;
                 break;
             case "Selection":
-                option = 2;
+                optionValue = 2;
                 break;
         }
     }
