@@ -48,10 +48,10 @@ public class Movement : MonoBehaviour
         rotationX = Mathf.Clamp(rotationX, -90f, 90f);
         cameraPlayer.localRotation = Quaternion.Euler(rotationX, 0f, 0f);
 
-        // Rotar el jugador basado en la entrada del mouse
-        transform.Rotate(Vector3.up * cameraVision.x * sensibility);
+        // Calcular la rotación del jugador basado en la entrada del mouse
+        float rotationY = cameraVision.x * sensibility;
+        transform.Rotate(0f, rotationY, 0f); // Solo rotar alrededor del eje Y
     }
-
     private void FixedUpdate()
     {
         movement();

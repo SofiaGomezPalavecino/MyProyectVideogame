@@ -1,37 +1,24 @@
-using System.Collections.Generic;
-using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class ObserverSelection : MonoBehaviour
 {
     public Mecanics mecanics;
-    public InteractiveP interactive;
 
-    void Start()
+    private void Start()
     {
-        if (mecanics != null)
-        {
-            // Suscribirse al evento
-            mecanics.SelectionChanged += HandleScoreChanged;
-
-            HandleScoreChanged(mecanics.optionValue);
-        }
+        mecanics.SelectionChanged += HandleSelectionChanged;
     }
-    void HandleScoreChanged(int newValue)
+
+    private void HandleSelectionChanged(InteractiveP interactive, bool selected)
     {
         if (interactive != null)
         {
-            interactive.NotifyValueChanged(newValue);
+            interactive.SetSelected(selected);
         }
     }
 
-    void OnDestroy()
+    private void OnDestroy()
     {
-        // Asegurarse de desuscribirse para evitar fugas de memoria
-        if (mecanics != null)
-        {
-            mecanics.SelectionChanged -= HandleScoreChanged;
-        }
+        mecanics.SelectionChanged -= HandleSelectionChanged;
     }
 }

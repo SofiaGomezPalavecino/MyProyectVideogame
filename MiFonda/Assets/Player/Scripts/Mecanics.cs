@@ -1,73 +1,86 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+ï»¿using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 public class Mecanics : MonoBehaviour
 {
-    public event Action<int> SelectionChanged;
+    public event Action<InteractiveP, bool> SelectionChanged;
+
     [SerializeField] private InputActionReference select;
-    [SerializeField] private int option;
+    [SerializeField] private InputActionReference mouse;
+    [SerializeField] private float rayDistance = 3f;
+    private InteractiveP selectedInteractive;
 
-    public int optionValue
-    {
-        get { return option; } 
-        set
-            {
-            if (option != value) // Solo notificar si el valor cambia
-            {
-                option = value;
-                SelectionChanged?.Invoke(option); // Notifica a los observadores
-            }
-        } 
-        
-    }
+    private InteractiveP currentInteractive;
 
-    // Update is called once per frame
     void Update()
     {
-        if (select.action.IsPressed())
+        UpdateRaycast();
+
+        if (select.action.WasPressedThisFrame())
         {
-            IsGrounded();
+            HandleSelectionInput();
+        }
+        if (mouse.action.IsInProgress())
+        {
+            HandleThrowInput();
+        }
+    }
+    private void HandleSelectionInput()
+    {
+        if (selectedInteractive != null && currentInteractive != null)
+        {
+            selectedInteractive.TryInteractWith(currentInteractive);
+            return;
+        }
+
+        if (selectedInteractive == null && currentInteractive != null)
+        {
+            selectedInteractive = currentInteractive;
+            SelectionChanged?.Invoke(selectedInteractive, true);
+            return;
+        }
+
+        if (selectedInteractive != null)
+        {
+            SelectionChanged?.Invoke(selectedInteractive, false);
+            selectedInteractive = null;
+        }
+    }
+
+    private void HandleThrowInput()
+    {
+        if (selectedInteractive == null)
+            return;
+
+        if (selectedInteractive is Pickable pickable)
+        {
+            selectedInteractive.SetSelected(false);
+            pickable.Throw();
+            selectedInteractive = null;
+        }
+    }
+
+    private void UpdateRaycast()
+    {
+        Camera cam = Camera.main;
+        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, rayDistance))
+        {
+            var interactive = hit.collider.GetComponent<InteractiveP>();
+
+            if (interactive != null)
+            {
+                currentInteractive = interactive;
+                interactive.Interact();
+            }
         }
         else
         {
-            optionValue = 0;
+            currentInteractive = null;
         }
     }
-    private void IsGrounded()
-    {
-        // Obtiene la posición de la cámara
-        Camera camera = Camera.main;
 
-        // Lanza un rayo desde la cámara en la dirección en la que está mirando
-        Ray ray = camera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-
-        // Realiza el Raycast
-        if (Physics.Raycast(ray, out hit))
-        {
-            isAnObject(hit.collider.gameObject.tag);
-        }
-        else
-        {
-            optionValue = 0;
-        }
-    }
-    private void isAnObject(string tag)
-    {
-        switch (tag)
-        {
-            case "Untagged":
-                optionValue = 0;
-                break;
-            case "Collectable":
-                optionValue = 1;
-                break;
-            case "Selection":
-                optionValue = 2;
-                break;
-        }
-    }
 }

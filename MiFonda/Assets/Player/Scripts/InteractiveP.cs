@@ -1,33 +1,35 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class InteractiveP : MonoBehaviour
+public abstract class InteractiveP : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
+    protected Rigidbody rb;
 
+    public bool IsSelected { get; private set; }
+
+    protected virtual void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void SetSelected(bool selected)
     {
+        if (IsSelected == selected) return;
 
+        IsSelected = selected;
+        OnSelectionChanged(selected);
     }
-    public void NotifyValueChanged(int newValue)
-    {
-        // Manejar la notificación del cambio de valor
-        Debug.Log("El valor ha cambiado a: " + newValue);
 
-        if (newValue == 1)
-        {
-            Debug.Log($"Valor: {newValue}");
-        }
-        else if (newValue == 2)
-        {
-            Debug.Log($"Abrir UI: {newValue}");
-        }
+    // Cada hijo decide qué hacer con el cambio
+    protected abstract void OnSelectionChanged(bool selected);
+
+    public virtual bool TryInteractWith(InteractiveP other)
+    {
+        return false;
+    }
+
+    // Para hover / feedback (raycast)
+    public virtual void Interact()
+    {
 
     }
 }

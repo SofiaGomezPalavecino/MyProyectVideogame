@@ -60,6 +60,7 @@ public class InputSystemSingleton : MonoBehaviour
             playerInputActions.Player.Move.Enable();
             playerInputActions.Player.Select.Enable();
             playerInputActions.Player.Mouse.Enable();
+            playerInputActions.Player.MouseClick.Enable();
         }
     }
     public void OnDisable()
@@ -67,5 +68,6 @@ public class InputSystemSingleton : MonoBehaviour
         playerInputActions.Player.Move.Disable();
         playerInputActions.Player.Select.Disable();
         playerInputActions.Player.Mouse.Disable();
+        playerInputActions.Player.MouseClick.Disable();
     }
 }
